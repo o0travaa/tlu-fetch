@@ -7,6 +7,16 @@ fn main() {
     let username = env::var("USER").unwrap();
     println!("  Username: {username}");
 
+    let os_name = fs::read_to_string("/etc/os-release").unwrap();
+    let mut os = String::new();
+    for line in os_name.lines() {
+        if line.starts_with("NAME=") {
+            os = line.replace("NAME=", "").replace("\"", "").trim().to_string();
+            break;
+        }
+    }
+    println!("  OS: {os}");
+
     let cpuinfo = fs::read_to_string("/proc/cpuinfo").unwrap();
     let mut cpu = String::new();
     for line in cpuinfo.lines() {
