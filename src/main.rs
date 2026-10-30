@@ -7,6 +7,9 @@ fn main() {
     let username = env::var("USER").unwrap();
     println!("  Username: {username}");
 
+    let hostname = fs::read_to_string("/etc/hostname").unwrap().trim().to_string();
+    println!("  Hostname: {hostname}");
+
     let os_name = fs::read_to_string("/etc/os-release").unwrap();
     let mut os = String::new();
     for line in os_name.lines() {
@@ -16,6 +19,9 @@ fn main() {
         }
     }
     println!("  OS: {os}");
+
+    let kernel = fs::read_to_string("/proc/sys/kernel/osrelease").unwrap().trim().to_string();
+    println!("  Kernel: {kernel}");
 
     let cpuinfo = fs::read_to_string("/proc/cpuinfo").unwrap();
     let mut cpu = String::new();
@@ -27,13 +33,13 @@ fn main() {
     }
     println!("  CPU: {cpu}");
 
-    let meminfo = fs::read_to_string("/proc/meminfo").unwrap();
-    let mut mem = String::new();
-    for line in meminfo.lines() {
-        if line.starts_with("MemTotal:") {
-            mem = line.replace("MemTotal:", "").trim().to_string();
-            break;
+    let shell = match env::var("SHELL") {
+        Ok(shell_value) => {
+            shell_value.split("/").last().unwrap_or("Unknown").to_string()
         }
-    }
-    println!("  Memory: {mem}");
+        Err(_) => {
+            "Unknown".to_string()
+        }
+    };
+    println!("  Shell: {shell}")
 }

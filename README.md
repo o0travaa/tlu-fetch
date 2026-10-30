@@ -1,10 +1,6 @@
 # tlu-fetch
 
-A small command-line tool for Linux. It shows basic information about your system:
-
-- username
-- CPU model
-- total memory
+A small command-line tool for Linux. It shows basic information about your system
 
 ## Requirements
 
@@ -45,15 +41,6 @@ cargo build --release
 
 ```bash
 ./target/release/tlu-fetch
-```
-
-You should see output like this:
-
-```text
-Info about your system:
-  Username: your_username
-  CPU: your CPU name
-  Memory: 16384000 kB
 ```
 
 ## Optional: install the command system-wide
