@@ -2,8 +2,6 @@ use std::env;
 use std::fs;
 
 fn main() {
-    println!("Info about your system:");
-
     // Username
     let username = match env::var("USER") {
         Ok(un_value) => {
@@ -24,9 +22,6 @@ fn main() {
         }
     };
 
-    println!("{username}@{hostname}");
-    println!("---------------------");
-
     // OS
     let os_name = match fs::read_to_string("/etc/os-release") {
         Ok(os_value) => {
@@ -46,7 +41,6 @@ fn main() {
     if os.is_empty() {
         os = "Unknown".to_string()
     }
-    println!("OS: {os}");
 
     // Kernel Version
     let kernel = match fs::read_to_string("/proc/sys/kernel/osrelease") {
@@ -57,7 +51,6 @@ fn main() {
             "Unknown".to_string()
         }
     };
-    println!("Kernel: {kernel}");
 
     // CPU
     let cpuinfo = match fs::read_to_string("/proc/cpuinfo") {
@@ -78,7 +71,6 @@ fn main() {
     if cpu.is_empty() {
         cpu = "Unknown".to_string()
     }
-    println!("CPU: {cpu}");
 
     // Shell
     let shell = match env::var("SHELL") {
@@ -89,5 +81,11 @@ fn main() {
             "Unknown".to_string()
         }
     };
-    println!("Shell: {shell}")
+    
+    // Output
+    let info = format!(
+        "{username}@{hostname}\n---------------------\nOS: {os}\nKernel: {kernel}\nCPU: {cpu}\nShell: {shell}"
+    );
+
+    println!("{info}")
 }
