@@ -4,22 +4,51 @@ use std::fs;
 fn main() {
     println!("Info about your system:");
 
-    let username = env::var("USER").unwrap();
-    println!("  Username: {username}");
+    // Username
+    let username = match env::var("USER") {
+        Ok(un_value) => {
+            un_value.trim().to_string()
+        }
+        Err(_) => {
+            "Unknown".to_string()
+        }
+    };
 
-    let hostname = fs::read_to_string("/etc/hostname").unwrap().trim().to_string();
-    println!("  Hostname: {hostname}");
+    // Hostname
+    let hostname = match fs::read_to_string("/etc/hostname") {
+        Ok(hn_value) => {
+            hn_value.trim().to_string()
+        }
+        Err(_) => {
+            "Unknown".to_string()
+        }
+    };
 
-    let os_name = fs::read_to_string("/etc/os-release").unwrap();
+    println!("{username}@{hostname}");
+    println!("---------------------");
+
+    // OS
+    let os_name = match fs::read_to_string("/etc/os-release") {
+        Ok(os_value) => {
+            os_value
+        }
+        Err(_) => {
+            "".to_string()
+        }
+    };
     let mut os = String::new();
     for line in os_name.lines() {
-        if line.starts_with("NAME=") {
-            os = line.replace("NAME=", "").replace("\"", "").trim().to_string();
+        if line.starts_with("PRETTY_NAME=") {
+            os = line.replace("PRETTY_NAME=", "").replace("\"", "").trim().to_string();
             break;
         }
     }
-    println!("  OS: {os}");
+    if os.is_empty() {
+        os = "Unknown".to_string()
+    }
+    println!("OS: {os}");
 
+    // Kernel Version
     let kernel = match fs::read_to_string("/proc/sys/kernel/osrelease") {
         Ok(kernel_value) => {
             kernel_value.trim().to_string()
@@ -28,7 +57,7 @@ fn main() {
             "Unknown".to_string()
         }
     };
-    println!("  Kernel: {kernel}");
+    println!("Kernel: {kernel}");
 
     // CPU
     let cpuinfo = match fs::read_to_string("/proc/cpuinfo") {
@@ -49,7 +78,7 @@ fn main() {
     if cpu.is_empty() {
         cpu = "Unknown".to_string()
     }
-    println!("  CPU: {cpu}");
+    println!("CPU: {cpu}");
 
     // Shell
     let shell = match env::var("SHELL") {
@@ -60,5 +89,5 @@ fn main() {
             "Unknown".to_string()
         }
     };
-    println!("  Shell: {shell}")
+    println!("Shell: {shell}")
 }
